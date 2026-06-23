@@ -891,17 +891,21 @@
       return;
     }
     container.innerHTML = `
-      <div style="display:flex;flex-direction:column;gap:16px;">
-        <h3 style="font-size:16px;font-weight:800;">${n}조 솔루션</h3>
-        ${rec.image_data ? `<img src="${rec.image_data}" style="max-width:260px;border-radius:10px;border:1px solid #E5E7EB;object-fit:contain;max-height:300px;">` : ''}
-        <div style="display:grid;gap:8px;">
-          <div class="view-row"><strong>조 이름 </strong>${rec.team_name||'-'}</div>
-          <div class="view-row"><strong>조원 </strong>${rec.member_names||'-'}</div>
-          <div class="view-row"><strong>코디 제목 </strong>${rec.coord_title||'-'}</div>
-          <div class="view-row"><strong>메인 색 </strong>${rec.main_color||'-'}</div>
-          <div class="view-row"><strong>전략 </strong></div>
-          <div class="view-strategy">${rec.strategy||'-'}</div>
-          <div style="font-size:12px;color:#9CA3AF;">제출: ${rec.submitted_at ? new Date(rec.submitted_at).toLocaleString('ko-KR') : '-'}</div>
+      <div style="display:flex;flex-direction:row;gap:28px;align-items:flex-start;">
+        <div style="flex:0 0 260px;">
+          ${rec.image_data
+            ? `<img src="${rec.image_data}" style="width:260px;border-radius:12px;border:1px solid #E5E7EB;object-fit:contain;display:block;">`
+            : `<div style="width:260px;height:320px;background:#F3F4F6;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#9CA3AF;font-size:14px;">이미지 없음</div>`}
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:12px;text-align:left;">
+          <h3 style="font-size:17px;font-weight:800;margin-bottom:4px;">${n}조 솔루션</h3>
+          <div style="font-size:17px;"><span style="color:#6B7280;font-weight:600;margin-right:8px;">조 이름</span>${rec.team_name||'-'}</div>
+          <div style="font-size:17px;"><span style="color:#6B7280;font-weight:600;margin-right:8px;">조원</span>${rec.member_names||'-'}</div>
+          <div style="font-size:17px;"><span style="color:#6B7280;font-weight:600;margin-right:8px;">코디 제목</span>${rec.coord_title||'-'}</div>
+          <div style="font-size:17px;"><span style="color:#6B7280;font-weight:600;margin-right:8px;">메인 색</span>${rec.main_color||'-'}</div>
+          <div style="font-size:17px;color:#6B7280;font-weight:600;">코디 전략</div>
+          <div style="font-size:17px;white-space:pre-wrap;line-height:1.7;color:#374151;">${rec.strategy||'-'}</div>
+          <div style="font-size:13px;color:#9CA3AF;margin-top:4px;">제출: ${rec.submitted_at ? new Date(rec.submitted_at).toLocaleString('ko-KR') : '-'}</div>
         </div>
       </div>`;
   }
