@@ -407,10 +407,11 @@
     .t-btn:hover { background: var(--light); }
     .t-btn.active { background: var(--ink); color: #fff; border-color: var(--ink); }
     .teacher-panel {
-      background: #fff; border: 1.5px solid var(--border);
-      border-radius: 16px; padding: 24px; min-height: 360px;
-    }
-    .teacher-empty { color: var(--gray); font-size: 14px; text-align: center; padding-top: 80px; }
+    background: #fff; border: 1.5px solid var(--border);
+    border-radius: 16px; padding: 24px; min-height: 360px;
+    text-align: left;
+}
+   .teacher-empty { color: var(--gray); font-size: 14px; text-align: center; padding-top: 80px; }
     .btn-export {
       margin-top: 12px;
       padding: 9px 14px;
@@ -892,7 +893,7 @@
     }
     container.innerHTML = `
       <div style="display:flex;flex-direction:row;gap:28px;align-items:flex-start;">
-        <div style="flex:0 0 260px;">
+        <div style="flex:0 0 260px;margin:0 auto;">
           ${rec.image_data
             ? `<img src="${rec.image_data}" style="width:260px;border-radius:12px;border:1px solid #E5E7EB;object-fit:contain;display:block;">`
             : `<div style="width:260px;height:320px;background:#F3F4F6;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#9CA3AF;font-size:14px;">이미지 없음</div>`}
