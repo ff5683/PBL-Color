@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>성보 색채 수업 — T.P.O를 맞춰라!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #FAFAF7;
+      --ink:   #1A1A1A;
+      --gray:  #6B7280;
+      --light: #F3F4F6;
+      --border:#E5E7EB;
+      --blue:  #2563EB;
+      --blue-dark: #1D4ED8;
+
+      --c1: #FCA5A5; --c1t: #991B1B;
+      --c2: #FCD34D; --c2t: #92400E;
+      --c3: #6EE7B7; --c3t: #065F46;
+      --c4: #93C5FD; --c4t: #1E40AF;
+      --c5: #C4B5FD; --c5t: #5B21B6;
+      --c6: #FCA5A5; --c6t: #9F1239;
+      --c7: #F9A8D4; --c7t: #9D174D;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── PAGE SYSTEM ── */
+    .page { display: none; min-height: 100vh; }
+    .page.active { display: flex; flex-direction: column; }
+
+    /* ── SHARED HEADER ── */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .top-bar .logo { font-size: 15px; font-weight: 700; color: var(--ink); }
+    .icon-row { display: flex; gap: 4px; }
+    .icon-btn {
+      width: 36px; height: 36px;
+      border: none; background: transparent; cursor: pointer;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gray);
+      transition: background .15s, color .15s;
+    }
+    .icon-btn:hover { background: var(--light); color: var(--ink); }
+    .icon-btn svg { width: 20px; height: 20px; }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      border: none; background: transparent; cursor: pointer;
+      font-size: 14px; color: var(--gray); font-family: inherit;
+      padding: 4px 0;
+      transition: color .15s;
+    }
+    .back-btn:hover { color: var(--ink); }
+    .back-btn svg { width: 16px; height: 16px; }
+
+    /* ── MAIN PAGE ── */
+    #page-main .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px 64px;
+      text-align: center;
+    }
+    .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 12px;
+    }
+    .main-title {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 900;
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .main-title em {
+      font-style: normal;
+      background: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .main-sub {
+      font-size: 16px;
+      color: var(--gray);
+      margin-bottom: 48px;
+    }
+    .group-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray);
+      margin-bottom: 16px;
+    }
+    .group-grid {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 680px;
+    }
+    .group-card {
+      width: 86px;
+      padding: 18px 12px;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      transition: transform .2s, box-shadow .2s, border-color .2s;
+      font-family: inherit;
+    }
+    .group-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0,0,0,.1);
+      border-color: #93C5FD;
+    }
+    .group-dot {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 800;
+    }
+    .group-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+
+    /* ── PASSWORD PAGE ── */
+    .pw-wrap {
+      flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px;
+    }
+    .pw-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 32px;
+      width: 100%; max-width: 360px;
+    }
+    .pw-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .pw-card p  { font-size: 13px; color: var(--gray); margin-bottom: 28px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--gray); }
+    .field input {
+      width: 100%; padding: 10px 14px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 15px; font-family: inherit;
+      outline: none; transition: border-color .15s;
+    }
+    .field input:focus { border-color: var(--blue); }
+    .btn-primary {
+      width: 100%; padding: 12px;
+      background: var(--ink); color: #fff;
+      border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: background .15s;
+      margin-bottom: 10px;
+    }
+    .btn-primary:hover { background: #333; }
+    .btn-ghost {
+      width: 100%; padding: 12px;
+      background: transparent; color: var(--gray);
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 15px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: background .15s, color .15s;
+    }
+    .btn-ghost:hover { background: var(--light); color: var(--ink); }
+    .err-msg { font-size: 13px; color: #DC2626; margin-top: 8px; min-height: 20px; }
+
+    /* ── CONTENT AREA ── */
+    .content { flex: 1; padding: 24px; max-width: 900px; margin: 0 auto; width: 100%; }
+
+    /* ── MISSION PAGE ── */
+    .mission-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 640px) {
+      .mission-layout { grid-template-columns: 1fr; }
+    }
+
+    .paper {
+      background: #FFFEF7;
+      border: 1px solid #E8E4D9;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 3px 3px 0 #EDE9DE, 6px 6px 0 #E5E0D5;
+    }
+    .paper-title {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 26px;
+      color: #4B4535;
+      border-bottom: 1px dashed #C8C3B2;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .mission-row {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 20px;
+      color: #3D3928;
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+    .mission-tip {
+      font-size: 12px;
+      color: #A09880;
+      margin-top: 20px;
+      font-style: italic;
+    }
+
+    .prompt-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .prompt-card h4 {
+      font-size: 13px; font-weight: 700;
+      color: var(--gray);
+      text-transform: uppercase; letter-spacing: .08em;
+      margin-bottom: 14px;
+    }
+    .prompt-tag {
+      display: inline-block;
+      background: #F0F4FF;
+      color: #3B5BDB;
+      border: 1px solid #C5D0F8;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 12px; font-family: monospace;
+      margin: 3px 3px 3px 0;
+    }
+
+    .page-footer {
+      padding: 20px 24px 32px;
+      display: flex; justify-content: center;
+    }
+    .btn-solution {
+      padding: 14px 48px;
+      background: var(--ink); color: #fff;
+      border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: background .15s, transform .1s;
+    }
+    .btn-solution:hover { background: #333; transform: translateY(-1px); }
+
+    /* ── SOLUTION PAGE ── */
+    .sol-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 640px) {
+      .sol-layout { grid-template-columns: 1fr; }
+    }
+
+    .img-drop {
+      aspect-ratio: 3/4;
+      background: var(--light);
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 10px;
+      cursor: pointer; overflow: hidden;
+      transition: border-color .15s;
+    }
+    .img-drop:hover { border-color: #93C5FD; }
+    .img-drop img { width: 100%; height: 100%; object-fit: contain; }
+    .img-drop-label { font-size: 13px; color: var(--gray); }
+    .upload-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 12px;
+      padding: 9px 20px;
+      background: #fff; color: var(--ink);
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 13px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: background .15s;
+    }
+    .upload-btn:hover { background: var(--light); }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+      display: block; font-size: 13px; font-weight: 600;
+      color: var(--gray); margin-bottom: 5px;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%; padding: 10px 14px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 14px; font-family: inherit;
+      outline: none; transition: border-color .15s;
+      background: #fff;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: var(--blue); }
+    .form-group textarea { resize: vertical; }
+
+    .btn-save {
+      width: 100%; padding: 14px;
+      background: var(--blue); color: #fff;
+      border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: background .15s;
+      margin-top: 6px;
+    }
+    .btn-save:hover { background: var(--blue-dark); }
+    .btn-save:disabled { background: #93C5FD; cursor: default; }
+
+    .status-msg { text-align: center; font-size: 13px; margin-top: 8px; min-height: 18px; }
+
+    /* ── VIEW MODE (submitted) ── */
+    .view-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .view-card img { width: 100%; border-radius: 10px; object-fit: contain; max-height: 320px; }
+    .view-row { font-size: 14px; color: var(--ink); }
+    .view-row strong { color: var(--gray); font-weight: 600; margin-right: 6px; }
+    .view-strategy { font-size: 14px; white-space: pre-wrap; line-height: 1.65; color: #374151; }
+    .btn-edit {
+      padding: 11px 28px;
+      background: var(--light); color: var(--ink);
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 14px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: background .15s;
+      align-self: flex-start;
+    }
+    .btn-edit:hover { background: var(--border); }
+
+    /* ── ADMIN PAGE ── */
+    .admin-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .admin-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+    .admin-card hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+    .admin-card input[type="text"],
+    .admin-card textarea {
+      width: 100%; padding: 9px 12px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 13px; font-family: monospace;
+      outline: none; transition: border-color .15s;
+      background: #fff;
+    }
+    .admin-card input[type="text"]:focus,
+    .admin-card textarea:focus { border-color: var(--blue); }
+    .admin-card label { display: block; font-size: 12px; font-weight: 600; color: var(--gray); margin-bottom: 5px; }
+    .btn-small {
+      margin-top: 8px;
+      padding: 8px 18px;
+      background: var(--ink); color: #fff;
+      border: none; border-radius: 8px;
+      font-size: 13px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: background .15s;
+    }
+    .btn-small:hover { background: #333; }
+
+    /* ── TEACHER PAGE ── */
+    .teacher-layout {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 600px) { .teacher-layout { grid-template-columns: 1fr; } }
+    .teacher-nav { display: flex; flex-direction: column; gap: 6px; }
+    .t-btn {
+      padding: 10px 14px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      background: #fff; color: var(--ink);
+      font-size: 13px; font-weight: 600; font-family: inherit;
+      cursor: pointer; text-align: left;
+      transition: background .15s, border-color .15s;
+    }
+    .t-btn:hover { background: var(--light); }
+    .t-btn.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .teacher-panel {
+      background: #fff; border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 24px; min-height: 360px;
+    }
+    .teacher-empty { color: var(--gray); font-size: 14px; text-align: center; padding-top: 80px; }
+    .btn-export {
+      margin-top: 12px;
+      padding: 9px 14px;
+      background: var(--light); color: var(--ink);
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 12px; font-weight: 600; font-family: inherit;
+      cursor: pointer; width: 100%;
+    }
+    .btn-export:hover { background: var(--border); }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     1. MAIN PAGE
+══════════════════════════════════════════ -->
+<div id="page-main" class="page active">
+  <div class="top-bar">
+    <span class="logo">색채 PBL</span>
+    <div class="icon-row">
+      <!-- 연필: 교사용 -->
+      <button class="icon-btn" onclick="showPwPage('teacher')" title="교사용 페이지">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 1-2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      </button>
+      <!-- 톱니: 관리자용 -->
+      <button class="icon-btn" onclick="showPwPage('admin')" title="관리자 설정">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow">성보고등학교 색채 수업</div>
+    <h1 class="main-title"><em>T.P.O를 맞춰라!</em></h1>
+    <p class="main-sub">Time · Place · Occasion — 상황에 맞는 색채 코디네이션 PBL수업</p>
+    <p class="group-label">지정된 조를 선택하세요.</p>
+    <div class="group-grid">
+      <button class="group-card" onclick="goToGroup(1)">
+        <div class="group-dot" style="background:#FEE2E2;color:#991B1B;">1</div>
+        <span class="group-name">1조</span>
+      </button>
+      <button class="group-card" onclick="goToGroup(2)">
+        <div class="group-dot" style="background:#FEF3C7;color:#92400E;">2</div>
+        <span class="group-name">2조</span>
+      </button>
+      <button class="group-card" onclick="goToGroup(3)">
+        <div class="group-dot" style="background:#D1FAE5;color:#065F46;">3</div>
+        <span class="group-name">3조</span>
+      </button>
+      <button class="group-card" onclick="goToGroup(4)">
+        <div class="group-dot" style="background:#DBEAFE;color:#1E40AF;">4</div>
+        <span class="group-name">4조</span>
+      </button>
+      <button class="group-card" onclick="goToGroup(5)">
+        <div class="group-dot" style="background:#EDE9FE;color:#5B21B6;">5</div>
+        <span class="group-name">5조</span>
+      </button>
+      <button class="group-card" onclick="goToGroup(6)">
+        <div class="group-dot" style="background:#FCE7F3;color:#9D174D;">6</div>
+        <span class="group-name">6조</span>
+      </button>
+      <button class="group-card" onclick="goToGroup(7)">
+        <div class="group-dot" style="background:#F0FDF4;color:#166534;">7</div>
+        <span class="group-name">7조</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     2. PASSWORD PAGE (교사/관리자 공용)
+══════════════════════════════════════════ -->
+<div id="page-pw" class="page">
+  <div class="top-bar">
+    <button class="back-btn" onclick="showPage('page-main')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      메인으로 돌아가기
+    </button>
+  </div>
+  <div class="pw-wrap">
+    <div class="pw-card">
+      <h2 id="pw-title">페이지 접근</h2>
+      <p id="pw-desc">비밀번호를 입력하세요.</p>
+      <div class="field">
+        <label>비밀번호</label>
+        <input id="pw-input" type="password" placeholder="비밀번호 입력"
+               onkeydown="if(event.key==='Enter') verifyPw()">
+      </div>
+      <p class="err-msg" id="pw-err"></p>
+      <button class="btn-primary" onclick="verifyPw()">입장하기</button>
+      <button class="btn-ghost" onclick="showPage('page-main')">돌아가기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     3. MISSION PAGE
+══════════════════════════════════════════ -->
+<div id="page-mission" class="page">
+  <div class="top-bar">
+    <button class="back-btn" onclick="showPage('page-main')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      메인으로 돌아가기
+    </button>
+    <span id="mission-group-badge" style="font-size:14px;font-weight:700;color:#6B7280;"></span>
+  </div>
+  <div class="content">
+    <div class="mission-layout">
+      <!-- 의뢰서 -->
+      <div class="paper">
+        <div class="paper-title">📋 미션 의뢰서</div>
+        <div id="mission-content"></div>
+        <p class="mission-tip" id="mission-tip"></p>
+      </div>
+      <!-- 프롬프트 -->
+      <div class="prompt-card">
+        <h4>✦ AI 이미지 프롬프트 참고</h4>
+        <div id="prompt-content"></div>
+        <p style="margin-top:14px;font-size:12px;color:#9CA3AF;">위 키워드를 조합해서 AI 이미지 생성에 사용하세요.</p>
+      </div>
+    </div>
+  </div>
+  <div class="page-footer">
+    <button class="btn-solution" onclick="goToSolution()">솔루션 작성 →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     4. SOLUTION PAGE
+══════════════════════════════════════════ -->
+<div id="page-solution" class="page">
+  <div class="top-bar">
+    <button class="back-btn" onclick="showPage('page-mission')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      의뢰서로 돌아가기
+    </button>
+    <span id="sol-badge" style="font-size:14px;font-weight:700;color:#6B7280;"></span>
+  </div>
+  <div class="content">
+
+    <!-- 제출 내역 보기 모드 -->
+    <div id="view-mode" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <h2 style="font-size:18px;font-weight:800;">제출 완료된 솔루션</h2>
+        <button class="btn-edit" onclick="switchToEdit()">수정하기</button>
+      </div>
+      <div class="view-card">
+        <div id="view-image-wrap"></div>
+        <div id="view-info"></div>
+      </div>
+    </div>
+
+    <!-- 제출 폼 -->
+    <div id="edit-mode">
+      <h2 style="font-size:18px;font-weight:800;margin-bottom:20px;">솔루션 제출</h2>
+      <div class="sol-layout">
+        <!-- 이미지 -->
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <label style="width:100%;cursor:pointer;">
+            <div class="img-drop" id="img-drop">
+              <svg style="width:32px;height:32px;color:#D1D5DB;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span class="img-drop-label">이미지를 첨부하세요</span>
+            </div>
+            <input type="file" accept="image/*" style="display:none;" onchange="handleImg(event)">
+          </label>
+          <button class="upload-btn" onclick="this.previousElementSibling && this.previousElementSibling.click()"
+            style="cursor:pointer;" type="button">
+            <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+            파일 첨부
+          </button>
+        </div>
+        <!-- 폼 -->
+        <div>
+          <div class="form-group">
+            <label>조 이름</label>
+            <input id="f-team" type="text" placeholder="예: 컬러리스트">
+          </div>
+          <div class="form-group">
+            <label>조원 이름</label>
+            <input id="f-members" type="text" placeholder="예: 김OO, 이OO, 박OO">
+          </div>
+          <div class="form-group">
+            <label>코디 제목</label>
+            <input id="f-title" type="text" placeholder="예: 봄의 따뜻함을 담은 코디">
+          </div>
+          <div class="form-group">
+            <label>메인 색</label>
+            <input id="f-color" type="text" placeholder="예: 코랄 핑크">
+          </div>
+          <div class="form-group">
+            <label>코디 전략 설명</label>
+            <textarea id="f-strategy" rows="4" placeholder="색채 선택 이유와 코디 전략을 설명하세요..."></textarea>
+          </div>
+          <button class="btn-save" id="save-btn" onclick="submitSolution()">저장하기</button>
+          <p class="status-msg" id="save-status"></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     5. TEACHER PAGE
+══════════════════════════════════════════ -->
+<div id="page-teacher" class="page">
+  <div class="top-bar">
+    <button class="back-btn" onclick="showPage('page-main')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      메인으로 돌아가기
+    </button>
+    <span style="font-size:14px;font-weight:700;color:#6B7280;">교사용 페이지</span>
+  </div>
+  <div class="content">
+    <div class="teacher-layout">
+      <div class="teacher-nav">
+        <button class="t-btn" onclick="viewGroup(1)">1조</button>
+        <button class="t-btn" onclick="viewGroup(2)">2조</button>
+        <button class="t-btn" onclick="viewGroup(3)">3조</button>
+        <button class="t-btn" onclick="viewGroup(4)">4조</button>
+        <button class="t-btn" onclick="viewGroup(5)">5조</button>
+        <button class="t-btn" onclick="viewGroup(6)">6조</button>
+        <button class="t-btn" onclick="viewGroup(7)">7조</button>
+        <button class="btn-export" onclick="exportCSV()">CSV 내보내기</button>
+      </div>
+      <div class="teacher-panel">
+        <div class="teacher-empty" id="teacher-view">좌측에서 조를 선택하세요</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     6. ADMIN PAGE
+══════════════════════════════════════════ -->
+<div id="page-admin" class="page">
+  <div class="top-bar">
+    <button class="back-btn" onclick="showPage('page-main')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      메인으로 돌아가기
+    </button>
+    <span style="font-size:14px;font-weight:700;color:#6B7280;">관리자 설정</span>
+  </div>
+  <div class="content">
+    <div class="admin-card">
+      <h3>의뢰서 내용 수정 (조별 JSON)</h3>
+      <label>JSON 형식으로 편집하세요</label>
+      <textarea id="admin-missions" rows="12"></textarea>
+      <button class="btn-small" onclick="saveMissions()">의뢰서 저장</button>
+      <hr>
+      <h3>AI 프롬프트 수정 (조별 JSON)</h3>
+      <label>JSON 형식으로 편집하세요</label>
+      <textarea id="admin-prompts" rows="10"></textarea>
+      <button class="btn-small" onclick="savePrompts()">프롬프트 저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ══ DATA ══ */
+  const TEACHER_PW = '5683';
+  const ADMIN_PW   = '5683';
+  let currentGroup = 1;
+  let allData = [];
+  let uploadedImage = '';
+  let pwTarget = 'teacher'; // which page pw protects
+
+  const defaultMissions = {
+    1: { age:'25세', gender:'여성', height:'165cm', tpo:'봄 소개팅', request:'봄 소개팅에 어울리는 화사한 코디', hashtags:'#봄 #소개팅 #화사함 #페미닌', tip:'파스텔톤 컬러 매칭을 고려해보세요.' },
+    2: { age:'30세', gender:'남성', height:'178cm', tpo:'비즈니스 미팅', request:'출근룩으로 활용 가능한 비즈니스 캐주얼', hashtags:'#비즈캐 #출근룩 #깔끔 #모던', tip:'무채색 베이스에 포인트 컬러 하나를 추천합니다.' },
+    3: { age:'20세', gender:'여성', height:'158cm', tpo:'캠퍼스 데일리', request:'캠퍼스 데일리룩, 편하면서 세련된 스타일', hashtags:'#캠퍼스 #데일리 #캐주얼 #트렌디', tip:'레이어링과 컬러 대비를 활용해보세요.' },
+    4: { age:'28세', gender:'남성', height:'182cm', tpo:'여름 휴가', request:'여름 휴가 리조트 코디', hashtags:'#여름 #리조트 #시원함 #휴양지', tip:'시원한 컬러와 린넨 소재감을 표현해보세요.' },
+    5: { age:'35세', gender:'여성', height:'170cm', tpo:'가을 결혼식', request:'가을 결혼식 하객룩', hashtags:'#하객룩 #가을 #우아함 #포멀', tip:'뮤트톤의 따뜻한 색감을 고려하세요.' },
+    6: { age:'22세', gender:'남성', height:'175cm', tpo:'스트릿 나들이', request:'스트릿 패션, 개성 있는 룩', hashtags:'#스트릿 #힙합 #개성 #레이어드', tip:'보색 대비와 그래픽 요소를 활용해보세요.' },
+    7: { age:'27세', gender:'여성', height:'163cm', tpo:'겨울 데이트', request:'겨울 데이트룩, 따뜻하면서 예쁜 스타일', hashtags:'#겨울 #데이트 #로맨틱 #따뜻함', tip:'톤온톤 배색과 니트 텍스처를 살려보세요.' }
+  };
+
+  const defaultPrompts = {
+    1: ['full body fashion photo','pastel spring outfit','feminine style','Korean woman 25yo','soft natural lighting'],
+    2: ['full body fashion photo','business casual','modern clean','Korean man 30yo','office background'],
+    3: ['full body fashion photo','campus daily look','casual trendy','Korean woman 20yo','university setting'],
+    4: ['full body fashion photo','summer resort wear','linen relaxed','Korean man 28yo','beach backdrop'],
+    5: ['full body fashion photo','autumn wedding guest','elegant muted tones','Korean woman 35yo','garden venue'],
+    6: ['full body fashion photo','street fashion','hip bold graphic','Korean man 22yo','urban street'],
+    7: ['full body fashion photo','winter date outfit','romantic warm knit','Korean woman 27yo','cozy city night']
+  };
+
+  /* localStorage helpers */
+  const store = {
+    getMissions: () => { try { return JSON.parse(localStorage.getItem('pbl_missions')) || defaultMissions; } catch { return defaultMissions; } },
+    getPrompts:  () => { try { return JSON.parse(localStorage.getItem('pbl_prompts'))  || defaultPrompts;  } catch { return defaultPrompts;  } },
+    getData:     () => { try { return JSON.parse(localStorage.getItem('pbl_data'))     || [];               } catch { return [];               } },
+    saveData:    (d) => localStorage.setItem('pbl_data', JSON.stringify(d))
+  };
+
+  /* ══ PAGE NAVIGATION ══ */
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  /* ══ PASSWORD ══ */
+  function showPwPage(target) {
+    pwTarget = target;
+    document.getElementById('pw-title').textContent = target === 'teacher' ? '교사용 페이지' : '관리자 설정';
+    document.getElementById('pw-desc').textContent  = '비밀번호를 입력해야 입장할 수 있습니다.';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-err').textContent = '';
+    showPage('page-pw');
+    setTimeout(() => document.getElementById('pw-input').focus(), 100);
+  }
+
+  function verifyPw() {
+    const val = document.getElementById('pw-input').value;
+    const correct = (pwTarget === 'teacher') ? TEACHER_PW : ADMIN_PW;
+    if (val === correct) {
+      document.getElementById('pw-err').textContent = '';
+      if (pwTarget === 'teacher') {
+        showPage('page-teacher');
+      } else {
+        initAdmin();
+        showPage('page-admin');
+      }
+    } else {
+      document.getElementById('pw-err').textContent = '비밀번호가 올바르지 않습니다.';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
+    }
+  }
+
+  /* ══ GROUP → MISSION ══ */
+  function goToGroup(n) {
+    currentGroup = n;
+    const m = store.getMissions()[n] || defaultMissions[1];
+    const pr = store.getPrompts()[n]  || defaultPrompts[1];
+
+    document.getElementById('mission-group-badge').textContent = `${n}조`;
+    document.getElementById('mission-content').innerHTML = `
+      <div class="mission-row">📌 의뢰인: ${m.age} · ${m.gender} · ${m.height}</div>
+      <div class="mission-row">🎯 T.P.O: ${m.tpo || '-'}</div>
+      <div class="mission-row">💬 요청: ${m.request}</div>
+      <div class="mission-row" style="margin-top:8px;font-size:17px;color:#6B6250;">${m.hashtags}</div>
+    `;
+    document.getElementById('mission-tip').textContent = '💡 ' + m.tip;
+    document.getElementById('prompt-content').innerHTML = pr.map(p =>
+      `<span class="prompt-tag">${p}</span>`
+    ).join('');
+    showPage('page-mission');
+  }
+
+  /* ══ SOLUTION ══ */
+  function goToSolution() {
+    document.getElementById('sol-badge').textContent = `${currentGroup}조`;
+    allData = store.getData();
+    const existing = allData.find(d => d.group_number === currentGroup);
+
+    if (existing) {
+      showViewMode(existing);
+    } else {
+      clearForm();
+      showEditMode();
+    }
+    showPage('page-solution');
+  }
+
+  function showViewMode(rec) {
+    document.getElementById('view-mode').style.display = 'block';
+    document.getElementById('edit-mode').style.display = 'none';
+
+    document.getElementById('view-image-wrap').innerHTML = rec.image_data
+      ? `<img src="${rec.image_data}" alt="제출 이미지">`
+      : `<div style="background:#F3F4F6;border-radius:8px;height:120px;display:flex;align-items:center;justify-content:center;color:#9CA3AF;font-size:14px;">이미지 없음</div>`;
+
+    document.getElementById('view-info').innerHTML = `
+      <div class="view-row"><strong>조 이름</strong>${rec.team_name || '-'}</div>
+      <div class="view-row"><strong>조원</strong>${rec.member_names || '-'}</div>
+      <div class="view-row"><strong>코디 제목</strong>${rec.coord_title || '-'}</div>
+      <div class="view-row"><strong>메인 색</strong>${rec.main_color || '-'}</div>
+      <div class="view-row"><strong>코디 전략</strong></div>
+      <div class="view-strategy">${rec.strategy || '-'}</div>
+      <div style="font-size:12px;color:#9CA3AF;margin-top:8px;">제출: ${rec.submitted_at ? new Date(rec.submitted_at).toLocaleString('ko-KR') : '-'}</div>
+    `;
+  }
+
+  function showEditMode() {
+    document.getElementById('view-mode').style.display = 'none';
+    document.getElementById('edit-mode').style.display = 'block';
+  }
+
+  function switchToEdit() {
+    // pre-fill form from existing record
+    allData = store.getData();
+    const rec = allData.find(d => d.group_number === currentGroup);
+    if (rec) {
+      document.getElementById('f-team').value     = rec.team_name    || '';
+      document.getElementById('f-members').value  = rec.member_names || '';
+      document.getElementById('f-title').value    = rec.coord_title  || '';
+      document.getElementById('f-color').value    = rec.main_color   || '';
+      document.getElementById('f-strategy').value = rec.strategy     || '';
+      if (rec.image_data) {
+        uploadedImage = rec.image_data;
+        document.getElementById('img-drop').innerHTML = `<img src="${rec.image_data}" style="width:100%;height:100%;object-fit:contain;">`;
+      }
+    }
+    showEditMode();
+  }
+
+  function clearForm() {
+    document.getElementById('f-team').value = '';
+    document.getElementById('f-members').value = '';
+    document.getElementById('f-title').value = '';
+    document.getElementById('f-color').value = '';
+    document.getElementById('f-strategy').value = '';
+    uploadedImage = '';
+    document.getElementById('img-drop').innerHTML = `
+      <svg style="width:32px;height:32px;color:#D1D5DB;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <span class="img-drop-label">이미지를 첨부하세요</span>`;
+    document.getElementById('save-status').textContent = '';
+  }
+
+  function handleImg(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      uploadedImage = ev.target.result;
+      document.getElementById('img-drop').innerHTML = `<img src="${uploadedImage}" style="width:100%;height:100%;object-fit:contain;">`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function submitSolution() {
+    const btn = document.getElementById('save-btn');
+    const status = document.getElementById('save-status');
+    btn.disabled = true;
+    btn.textContent = '저장 중...';
+    status.textContent = '';
+
+    const record = {
+      group_number:  currentGroup,
+      team_name:     document.getElementById('f-team').value,
+      member_names:  document.getElementById('f-members').value,
+      coord_title:   document.getElementById('f-title').value,
+      main_color:    document.getElementById('f-color').value,
+      strategy:      document.getElementById('f-strategy').value,
+      image_data:    uploadedImage,
+      submitted_at:  new Date().toISOString()
+    };
+
+    allData = store.getData();
+    const idx = allData.findIndex(d => d.group_number === currentGroup);
+    if (idx >= 0) { allData[idx] = record; }
+    else          { allData.push(record); }
+    store.saveData(allData);
+
+    btn.disabled = false;
+    btn.textContent = '저장하기';
+    status.style.color = '#059669';
+    status.textContent = '✅ 저장 완료!';
+
+    // 1.5초 후 메인으로
+    setTimeout(() => showPage('page-main'), 1500);
+  }
+
+  /* ══ TEACHER VIEW ══ */
+  function viewGroup(n) {
+    document.querySelectorAll('.t-btn').forEach((b, i) => b.classList.toggle('active', i === n-1));
+    allData = store.getData();
+    const rec = allData.find(d => d.group_number === n);
+    const container = document.getElementById('teacher-view');
+    if (!rec) {
+      container.innerHTML = `<div class="teacher-empty">${n}조: 아직 제출된 내용이 없습니다.</div>`;
+      return;
+    }
+    container.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <h3 style="font-size:16px;font-weight:800;">${n}조 솔루션</h3>
+        ${rec.image_data ? `<img src="${rec.image_data}" style="max-width:260px;border-radius:10px;border:1px solid #E5E7EB;object-fit:contain;max-height:300px;">` : ''}
+        <div style="display:grid;gap:8px;">
+          <div class="view-row"><strong>조 이름 </strong>${rec.team_name||'-'}</div>
+          <div class="view-row"><strong>조원 </strong>${rec.member_names||'-'}</div>
+          <div class="view-row"><strong>코디 제목 </strong>${rec.coord_title||'-'}</div>
+          <div class="view-row"><strong>메인 색 </strong>${rec.main_color||'-'}</div>
+          <div class="view-row"><strong>전략 </strong></div>
+          <div class="view-strategy">${rec.strategy||'-'}</div>
+          <div style="font-size:12px;color:#9CA3AF;">제출: ${rec.submitted_at ? new Date(rec.submitted_at).toLocaleString('ko-KR') : '-'}</div>
+        </div>
+      </div>`;
+  }
+
+  function exportCSV() {
+    allData = store.getData();
+    if (!allData.length) { alert('제출된 데이터가 없습니다.'); return; }
+    const headers = ['조번호','조이름','조원','코디제목','메인색','전략','제출시간'];
+    const rows = allData.map(d => [
+      d.group_number, d.team_name, d.member_names,
+      d.coord_title, d.main_color,
+      `"${(d.strategy||'').replace(/"/g,'""')}"`,
+      d.submitted_at
+    ]);
+    const csv = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv;charset=utf-8;' }));
+    a.download = 'PBL_솔루션_제출.csv';
+    a.click();
+  }
+
+  /* ══ ADMIN ══ */
+  function initAdmin() {
+    document.getElementById('admin-missions').value = JSON.stringify(store.getMissions(), null, 2);
+    document.getElementById('admin-prompts').value  = JSON.stringify(store.getPrompts(),  null, 2);
+  }
+
+  function saveMissions() {
+    try {
+      const val = JSON.parse(document.getElementById('admin-missions').value);
+      localStorage.setItem('pbl_missions', JSON.stringify(val));
+      alert('의뢰서가 저장되었습니다.');
+    } catch { alert('JSON 형식이 올바르지 않습니다.'); }
+  }
+
+  function savePrompts() {
+    try {
+      const val = JSON.parse(document.getElementById('admin-prompts').value);
+      localStorage.setItem('pbl_prompts', JSON.stringify(val));
+      alert('프롬프트가 저장되었습니다.');
+    } catch { alert('JSON 형식이 올바르지 않습니다.'); }
+  }
+
+  /* ══ INIT ══ */
+  allData = store.getData();
+</script>
+</body>
+</html>
