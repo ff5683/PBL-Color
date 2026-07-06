@@ -666,10 +666,10 @@
       <textarea id="admin-missions" rows="12"></textarea>
       <button class="btn-small" onclick="saveMissions()">의뢰서 저장</button>
       <hr>
-      <h3>AI 프롬프트 수정 (조별 JSON)</h3>
-      <label>JSON 형식으로 편집하세요</label>
-      <textarea id="admin-prompts" rows="10"></textarea>
-      <button class="btn-small" onclick="savePrompts()">프롬프트 저장</button>
+     <h3>AI 프롬프트 수정 (조별)</h3>
+      <p style="font-size:12px;color:#9CA3AF;margin-bottom:14px;">각 조의 프롬프트를 자유롭게 문장으로 입력하세요. 학생들이 AI 이미지 생성에 그대로 붙여넣을 수 있습니다.</p>
+      <div id="prompt-fields" style="display:flex;flex-direction:column;gap:14px;"></div>
+      <button class="btn-small" style="margin-top:16px;" onclick="savePrompts()">프롬프트 저장</button>
     </div>
   </div>
 </div>
@@ -929,9 +929,23 @@
   }
 
   /* ══ ADMIN ══ */
-  function initAdmin() {
+ function initAdmin() {
     document.getElementById('admin-missions').value = JSON.stringify(store.getMissions(), null, 2);
-    document.getElementById('admin-prompts').value  = JSON.stringify(store.getPrompts(),  null, 2);
+    // 프롬프트 입력 필드를 조별로 생성
+    const prompts = store.getPrompts();
+    const container = document.getElementById('prompt-fields');
+    container.innerHTML = '';
+    for (let i = 1; i <= 7; i++) {
+      const val = Array.isArray(prompts[i]) ? prompts[i].join(', ') : (prompts[i] || '');
+      container.innerHTML += `
+        <div>
+          <label style="font-size:12px;font-weight:700;color:#6B7280;display:block;margin-bottom:4px;">${i}조 프롬프트</label>
+          <textarea id="prompt-group-${i}" rows="3"
+            style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;outline:none;"
+            placeholder="예: A full body photo of a Korean woman in her 20s wearing a pastel spring outfit, feminine style, soft natural lighting"
+          >${val}</textarea>
+        </div>`;
+    }
   }
 
   function saveMissions() {
@@ -943,11 +957,14 @@
   }
 
   function savePrompts() {
-    try {
-      const val = JSON.parse(document.getElementById('admin-prompts').value);
-      localStorage.setItem('pbl_prompts', JSON.stringify(val));
-      alert('프롬프트가 저장되었습니다.');
-    } catch { alert('JSON 형식이 올바르지 않습니다.'); }
+    const result = {};
+    for (let i = 1; i <= 7; i++) {
+      const raw = document.getElementById(`prompt-group-${i}`).value.trim();
+      // 쉼표로 구분된 키워드 입력도, 통문장 입력도 모두 배열로 저장
+      result[i] = raw ? [raw] : [];
+    }
+    localStorage.setItem('pbl_prompts', JSON.stringify(result));
+    alert('프롬프트가 저장되었습니다.');
   }
 
   /* ══ INIT ══ */
